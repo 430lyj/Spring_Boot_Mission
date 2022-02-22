@@ -29,14 +29,13 @@ public class PostingRepository {
     }
 
     public Long update(Long id, String title, String body, Board board){
-        em.getTransaction().begin();
         Posting posting = em.find(Posting.class, id);
         posting.setTitle(title);
         posting.setBody(body);
         posting.setBoard(board);
-        em.merge(board);
+        em.merge(posting);
         em.flush();
-        return board.getId();
+        return posting.getId();
     }
 
     public void delete(Posting posting){

@@ -40,18 +40,27 @@ public class PostingApi {
     }
 
     @PutMapping("postings/{posting_id}")
-    public UpdatePostingResponse updatePosting(@PathVariable("posting_id") Long posting_id,
+    public UpdateDeletePostingResponse updatePosting(@PathVariable("posting_id") Long posting_id,
                                                @RequestBody @Valid updatePostingRequest request){
-        if (postingService.read(posting_id).getPassword().equals(request.getPassword()){
-            postingService.update(posting_id, request.getTitle(), request.getBody(), request.getWriter(), request.getBoard_id());
-            return new UpdatePostingResponse("200");
+        if (postingService.read(posting_id).getPassword().equals(request.getPassword())){
+            postingService.update(posting_id, request.getTitle(), request.getBody(), request.getBoard_id());
+            return new UpdateDeletePostingResponse("200");
         }
-        return new UpdatePostingResponse("비밀번호가 일치하지 않습니다.");
+        return new UpdateDeletePostingResponse("비밀번호가 일치하지 않습니다.");
+    }
 
+    @DeleteMapping("postings/{posting_id}")
+    public UpdateDeletePostingResponse deletePosting(@PathVariable("posting_id") Long posting_id,
+                              @RequestBody @Valid deletePostingRequest request){
+        if (postingService.read(posting_id).getPassword().equals(request.getPassword())){
+            postingService.delete(posting_id);
+            return new UpdateDeletePostingResponse("200");
+        }
+        return new UpdateDeletePostingResponse("비밀번호가 일치하지 않습니다.");
     }
 
     @Data
-    private class PostingDto {
+    static class PostingDto {
         private Long id;
         private String title;
         private String body;
@@ -66,7 +75,7 @@ public class PostingApi {
     }
 
     @Data
-    private class createPostingRequest {
+    static class createPostingRequest {
         @NotEmpty private String title;
         @NotEmpty private String writer;
         @NotEmpty private String password;
@@ -75,7 +84,7 @@ public class PostingApi {
     }
 
     @Data
-    private class CreatePostingResponse {
+    static class CreatePostingResponse {
         Long id;
         public CreatePostingResponse(Long id){
             this.id = id;
@@ -83,19 +92,24 @@ public class PostingApi {
     }
 
     @Data
-    private class updatePostingRequest {
+    static class updatePostingRequest {
         @NotEmpty private String password;
         private String title;
-        private String writer;
         private String body;
         private Long board_id;
     }
 
     @Data
-    private class UpdatePostingResponse {
+    static class UpdateDeletePostingResponse {
         String status;
-        public UpdatePostingResponse(String status){
+        public UpdateDeletePostingResponse(String status){
             this.status = status;
         }
     }
+
+    @Data
+    static class deletePostingRequest {
+        @NotEmpty String password;
+    }
+
 }

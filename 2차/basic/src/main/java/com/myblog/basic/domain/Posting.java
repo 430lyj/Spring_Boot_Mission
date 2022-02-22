@@ -22,4 +22,14 @@ public class Posting {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    public static Posting createPosting(Board board, String title, String body, String writer, String password){
+        Posting posting = new Posting();
+        posting.setBoard(board);
+        posting.setTitle(title);
+        posting.setBody(body);
+        posting.setWriter(writer);
+        posting.setPassword(password);
+
+        return posting;
+    }
 }
