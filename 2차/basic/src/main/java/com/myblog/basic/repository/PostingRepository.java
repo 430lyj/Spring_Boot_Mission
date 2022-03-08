@@ -22,7 +22,7 @@ public class PostingRepository {
     }
 
     public List<Posting> findByBoard (Long board_id){
-        return em.createQuery("select p from Posting  p" +
+        return em.createQuery("select p from Posting p" +
                 " where p.board.id = :board_id ", Posting.class)
                 .setParameter("board_id", board_id)
                 .getResultList();

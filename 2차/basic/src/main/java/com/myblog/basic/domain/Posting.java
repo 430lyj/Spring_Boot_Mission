@@ -1,5 +1,6 @@
 package com.myblog.basic.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,14 +16,19 @@ public class Posting {
 
     private String title;
     private String body;
-    private String writer;
+
+    @JsonIgnore
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name="user_id")
+    private User writer;
+
     private String password;
 
-    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
-    public static Posting createPosting(Board board, String title, String body, String writer, String password){
+    public static Posting createPosting(Board board, String title, String body, User writer, String password){
         Posting posting = new Posting();
         posting.setBoard(board);
         posting.setTitle(title);

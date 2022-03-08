@@ -2,8 +2,10 @@ package com.myblog.basic.api;
 
 import com.myblog.basic.domain.Board;
 import com.myblog.basic.domain.Posting;
+import com.myblog.basic.domain.User;
 import com.myblog.basic.service.BoardService;
 import com.myblog.basic.service.PostingService;
+import com.myblog.basic.service.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class PostingApi {
     private final BoardService boardService;
     private final PostingService postingService;
+    private final UserService userService;
 
     @GetMapping("/board/{board_id}/postings/")
     public List<PostingDto> getPostingsByBoard (@PathVariable("board_id") Long board_id){
@@ -35,7 +38,8 @@ public class PostingApi {
     @PostMapping("/board/{board_id}/postings")
     public CreatePostingResponse createPosting(@PathVariable("board_id") Long board_id,
                                  @RequestBody @Valid createPostingRequest request) {
-        Long id = postingService.save(request.getTitle(), request.getBody(), request.getWriter(), board_id, request.getPassword());
+        User user = userService.findOne(Long.parseLong(request.getWriter_id()));
+        Long id = postingService.save(request.getTitle(), request.getBody(), user, board_id, request.getPassword());
         return new CreatePostingResponse(id);
     }
 
@@ -64,7 +68,7 @@ public class PostingApi {
         private Long id;
         private String title;
         private String body;
-        private String writer;
+        private User writer;
         public PostingDto(Posting p) {
             this.id = p.getId();
             this.body = p.getBody();
@@ -77,7 +81,7 @@ public class PostingApi {
     @Data
     static class createPostingRequest {
         @NotEmpty private String title;
-        @NotEmpty private String writer;
+        @NotEmpty private String writer_id;
         @NotEmpty private String password;
         private String body;
 

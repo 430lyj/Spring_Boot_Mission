@@ -2,6 +2,7 @@ package com.myblog.basic.service;
 
 import com.myblog.basic.domain.Board;
 import com.myblog.basic.domain.Posting;
+import com.myblog.basic.domain.User;
 import com.myblog.basic.repository.BoardRepository;
 import com.myblog.basic.repository.PostingRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class PostingService {
         return posting;
     }
 
-    public Long save(String title, String body, String writer, Long board_id, String password){
+    public Long save(String title, String body, User writer, Long board_id, String password){
         Board board = boardRepository.read(board_id);
         Posting posting = Posting.createPosting(board, title, body, writer, password);
         postingRepository.save(posting);
