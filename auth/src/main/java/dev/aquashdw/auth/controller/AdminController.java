@@ -12,7 +12,7 @@ public class AdminController {
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @GetMapping
-    public String home(){
+    public String adminHome(){
         return "admin";
     }
 }
