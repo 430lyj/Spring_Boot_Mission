@@ -1,13 +1,37 @@
 package dev.aquashdw.auth.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter { //extend로 기본 설정 되어 있는 spring security를 어느정도 확인 가능
+    private final UserDetailsService userDetailsService;
+
+    public WebSecurityConfig(@Autowired UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication() //메모리 상에서 유저 검증하겠다는 의믜
+//                .withUser("user1")
+//                .password(passwordEncoder().encode("user1pass"))
+//                .roles("USER")
+//                .and()
+//                .withUser("admin1")
+//                .password(passwordEncoder().encode("admin1pass"))
+//                .roles("ADMIN");
+       auth.userDetailsService(this.userDetailsService); // 얘를 이용하면 더 이상 메모리 구현체가 아닌 DB에 유저 저장 가능
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception { //filter와 비슷한 느낌
@@ -30,6 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { //extend�
                 .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true) //http session 개체를 사용할 때 거기에 저장해둔 정보를 지우는 것
                 .permitAll()
+        // signup은 수동으로 만들어줘야 함
         ;
     }
 }
