@@ -1,5 +1,6 @@
 package dev.aquashdw.community.controller;
 
+import dev.aquashdw.community.controller.dto.UserDto;
 import dev.aquashdw.community.entity.UserEntity;
 import dev.aquashdw.community.repository.AreaRepository;
 import dev.aquashdw.community.repository.UserRepository;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
-@RequestMapping("user")
+@RequestMapping("users")
 public class UserWebController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
@@ -48,15 +49,18 @@ public class UserWebController {
     @PostMapping("signup")
     public String signUpPost(@RequestParam("username") String username,
                              @RequestParam("password") String password,
-                             @RequestParam("password_check") String passwordCheck){
+                             @RequestParam("password_check") String passwordCheck,
+                             @RequestParam("is_shop_owner") Boolean isShopOwner){
         if (!password.equals(passwordCheck)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         UserEntity newUser = new UserEntity();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
-        newUser.setResidence(areaRepository.findById((long) ((Math.random()*10000)%3)).get());
-        userRepository.save(newUser);
+        newUser.setResidence(areaRepository.findById((long) ((Math.random()*10000)%3)+1).get());
+        newUser.setShopOwner(isShopOwner);
+        userService.createUser(new UserDto(newUser));
+        logger.info("New user is saved {}", newUser.toString());
         return "redirect:/home";
     }
 }

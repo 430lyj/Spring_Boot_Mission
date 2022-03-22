@@ -26,18 +26,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception { //filter와 비슷한 느낌
         http
                 .authorizeRequests()
-                .antMatchers("/home/**", "/user/**")
+                .antMatchers("/home/**", "/users/**")
                 .anonymous()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/user/login") // 기본 로그인 경로
+                .loginPage("/users/login") // 기본 로그인 경로
                 .defaultSuccessUrl("/home") // 성공 시의 기본 경로
                 .permitAll()
                 .and()
                 .logout()
-                .logoutUrl("/user/logout")
+                .logoutUrl("/users/logout")
                 .logoutSuccessUrl("/home")
                 .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true) //http session 개체를 사용할 때 거기에 저장해둔 정보를 지우는 것
