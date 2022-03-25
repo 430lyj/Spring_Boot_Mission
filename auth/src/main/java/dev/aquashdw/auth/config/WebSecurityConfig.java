@@ -1,5 +1,6 @@
 package dev.aquashdw.auth.config;
 
+import dev.aquashdw.auth.infra.NaverOauth2Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter { //extend로 기본 설정 되어 있는 spring security를 어느정도 확인 가능
     private final UserDetailsService userDetailsService;
+    private final NaverOauth2Service naverOauth2Service;
 
-    public WebSecurityConfig(@Autowired UserDetailsService userDetailsService) {
+    public WebSecurityConfig(@Autowired UserDetailsService userDetailsService,
+                             @Autowired NaverOauth2Service naverOauth2Service) {
         this.userDetailsService = userDetailsService;
+        this.naverOauth2Service = naverOauth2Service;
     }
 
     @Override
@@ -42,11 +46,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { //extend�
                 .anonymous() //authenticated, denyAll, anonymous 등이 존재. anonymous -> 로그인 하지 않은 사용자들 접근 허용
                 .anyRequest() //어느 요청에나 (else 같은 느낌으로) 처리 가능하도록 넣는 것으로, 꼭 다른 url 들 다 기준 세운 후에 마지막에 넣어주기
                 .authenticated()
-                .and() // authorizeRequest는 끝났고, httpSecurity에 대한 다음 설정 가능.
+        .and() // authorizeRequest는 끝났고, httpSecurity에 대한 다음 설정 가능.
                 .formLogin() //403이면 /login으로 redirect 해라 라는 뜻
                 .loginPage("/user/login") // 기본 로그인 경로
                 .defaultSuccessUrl("/home") // 성공 시의 기본 경로
                 .permitAll()
+        .and()
+                .oauth2Login()
+                    .userInfoEndpoint()
+                    .userService(this.naverOauth2Service)
+                .and()
+                    .defaultSuccessUrl("/home")
         .and()
                 .logout()
                 .logoutUrl("/user/logout")
