@@ -1,4 +1,10 @@
-## 2차 과제 수행 내역
+## 2차 과제 수행 내용
+- 게시판에 대한 CRUD
+- 게시판 내 게시글에 대한 CRUD
+- REST API를 이용하고, URL 구조에 대한 고민
+- 게시글 삭제 시 게시글의 비밀번호가 일치해야 
+
+
 ||
 |:-:|
 |<img width="910" alt="image" src="https://user-images.githubusercontent.com/75655613/155174046-561cc4c7-53ef-4a15-9afd-0c3ddf0ae993.png">|
